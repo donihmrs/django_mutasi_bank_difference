@@ -190,6 +190,4 @@ def generate_report_different(request):
         'difference': bank_total - zahir_total
     })
 
-    print  ("Generated report data:", report_data)
-
     return JsonResponse({'statusCode': 200, 'status': 'ok', 'data': report_data})
