@@ -67,7 +67,7 @@ Key directories and files:
    python manage.py runserver
    ```
 7. Open your browser at:
-   - http://127.0.0.1:8000/
+   - http://127.0.0.1:8890/
 
 ## Running with Docker
 1. Ensure Docker and docker-compose are installed.
@@ -75,10 +75,10 @@ Key directories and files:
    - Copy `env.example` to `.env` and adjust values.
 3. Build and start services:
    ```bash
-   docker-compose up --build
+   docker-compose up -d --build
    ```
 4. Access the app at:
-   - http://localhost:8000/
+   - http://localhost:8890/
 
 To stop containers:
 ```bash
