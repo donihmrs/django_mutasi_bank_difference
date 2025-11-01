@@ -180,14 +180,14 @@ def generate_report_different(request):
             'difference': difference
         })
 
-    bank_total = bank_df['debit'].sum() - bank_df['kredit'].sum()
+    bank_total = bank_df['kredit'].sum() - bank_df['debit'].sum()
     zahir_total = zahir_df['debit'].sum() - zahir_df['kredit'].sum()    
 
     report_data['selisih'].append({
         'tanggal': tanggalFilter,
         'bank_total': bank_total,
         'zahir_total': zahir_total,
-        'difference': bank_total + zahir_total
+        'difference': bank_total - zahir_total
     })
 
     print  ("Generated report data:", report_data)
