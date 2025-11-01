@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  django_mutasi:
+    build: .
+    container_name: django_mutasi
+    environment:
+      DEBUG: False
+      DB_NAME: mutasi_db
+      DB_USER: root
+      DB_PASSWORD: mutasi-999
+      DB_HOST: db_mutasi
+      DB_PORT: 3306
+    depends_on:
+      - db_mutasi
+    networks:
+      - mutasi_network
+    ports:
+      - "8890:8000"
+    restart: always
+
+  db_mutasi:
+    image: mariadb:latest
+    container_name: mutasi_db
+    environment:
+      MYSQL_ROOT_PASSWORD: mutasi-999
+      MYSQL_DATABASE: mutasi_db
+      MYSQL_USER: mutasi_user
+      MYSQL_PASSWORD: mutasi-999
+    volumes:
+      - mariadb_mutasi_data:/var/lib/mysql
+    networks:
+      - mutasi_network
+    ports:
+      - "3308:3306"
+    restart: unless-stopped
+
+volumes:
+  mariadb_mutasi_data:
+
+networks:
+  mutasi_network:
+    driver: bridge
+    name: mutasi_network
