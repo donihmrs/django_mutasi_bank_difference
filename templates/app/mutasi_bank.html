@@ -1,0 +1,38 @@
+{% extends './layout/base.html' %}
+{% load humanize %}
+{% block title %}Mutasi Bank{% endblock %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4 text-center text-blue-700">Mutasi Bank</h1>
+
+{% if data %}
+<table class="min-w-full border border-gray-300 text-sm">
+    <thead class="bg-blue-600 text-white">
+        <tr>
+            <th class="py-2 px-4 border">Tanggal</th>
+            <th class="py-2 px-4 border">Deskripsi</th>
+            <th class="py-2 px-4 border">Debit</th>
+            <th class="py-2 px-4 border">Kredit</th>
+            <th class="py-2 px-4 border">Saldo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr class="hover:bg-gray-100">
+            <!-- Format Tanggal change to d M Y-->
+            <td class="py-2 px-4 border">{{ item.tanggal|date:"d M Y" }}</td>
+            <td class="py-2 px-4 border">{{ item.description }}</td>
+            <!-- Format changed to number Format -->
+            <td class="py-2 px-4 border text-right">{{ item.debit|floatformat:2|intcomma }}</td>
+            <td class="py-2 px-4 border text-right">{{ item.kredit|floatformat:2|intcomma }}</td>
+            <!-- Added Color Read saldo column , if saldo < 0 then red else green -->
+            <td class="py-2 px-4 border text-right {% if item.saldo < 0 %}text-red-500{% else %}text-green-500{% endif %}">{{ item.saldo|floatformat:2|intcomma }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-center text-gray-500">Belum ada data mutasi bank.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "./layout/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+     {% if not data_ready %}
+        <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-4 col-start-2">
+                <h1 class="text-2xl font-bold mb-4 text-center text-blue-700 mt-2">Import Data Mutasi Bank and Mutasi Zahir</h1>
+
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 col-6" role="alert">
+                    <p class="font-bold">⚠️ Warning!</p>
+                    <p>Data mutasi bank dan mutasi zahir belum diimpor. Silakan klik tombol di bawah untuk memulai proses impor.</p>
+
+                    <button type="submit" id="importButton" class="bg-blue-600 text-white px-4 py-2 rounded">Import Data</button>
+
+                    <p id="progressText" class="mt-2 text-gray-700"></p>
+                </div>
+            </div>
+            
+        </div>
+
+
+        
+
+        <script>
+            const progressText = document.getElementById('progressText');
+
+            const buttonImport = document.getElementById('importButton');
+            buttonImport.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                buttonImport.disabled = true;
+    
+                progressText.textContent = 'Importing Data...';
+    
+                const response = await fetch("{% url 'import_data' %}", {
+                    method: 'GET',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                });
+    
+                // if response error 500 show failed
+                if (response.status === 500) {
+                    progressText.textContent = '❌ Import failed!';
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.statusCode === 200) {
+                    progressText.textContent = '✅ Import complete!';
+
+                    // reload page after 2 seconds
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                    
+                } else {
+                    progressText.textContent = '❌ Import failed!';
+                }
+            });
+        </script>
+
+    {% else %}
+        <div class="grid grid-cols-6 gap-4 mt-4">
+            <div class="col-span-4 col-start-2">
+                <div class="bg-green-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 col-6" role="alert">
+                    <div class="text-center mt-2">
+                        <h2 class="text-green-600 text-xl font-semibold">🎉 Congratulations!</h2>
+                        <p>Data siap disajikan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {% endif %}
+{% endblock %}
+
+

@@ -1,0 +1,6 @@
+node_modules
+__pycache__
+.env
+.qodo
+managed_context
+test_suite_analysis

@@ -1,0 +1,115 @@
+{% extends './layout/base.html' %}
+{% block title %}Laporan{% endblock %}
+{% load humanize %}
+{% block content %}
+
+<h1 class="text-2xl font-bold mb-4 text-center text-blue-700 mt-2">Laporan Selisih</h1>
+
+<!-- Create filter form date -->
+
+<div class="flex items-center justify-center space-x-4 mb-2">
+    <div>
+        <label for="tanggal" class="block text-sm font-medium text-gray-700">Pilih Tanggal:</label>
+        <input type="date" id="tanggal" name="tanggal" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" value="{{ request.GET.tanggal }}">
+    </div>
+    <div class="flex items-end">
+        <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
+    </div>
+</div>
+
+<div class="overflow-x-auto pl-10 pr-10">
+    <h1>Detail Mutasi Bank dan Mutasi Zahir</h1>
+    <table class="min-w-full border border-gray-300 text-sm mt-4">
+        <thead class="bg-blue-600 text-white">
+            <tr>
+                <th class="py-2 px-4 border">Tanggal</th>
+                <th class="py-2 px-4 border">Deskripsi (Mutasi Bank)</th>
+                <th class="py-2 px-4 border">Mutasi Bank (Detail)</th>
+                <th class="py-2 px-4 border">Deskripsi (Mutasi Zahir)</th>
+                <th class="py-2 px-4 border">Mutasi Zahir (Detail)</th>
+            </tr>
+        </thead>
+        <tbody id="detail-body">
+
+        </tbody>
+    </table>
+</div>
+
+<!-- Create different saldo of between mutasi bank and mutasi zahir by date -->
+
+<div class="overflow-x-auto pl-10 pr-10 mt-3">
+    <h1 class="mt-8">Selisih Antara Mutasi Bank dan Mutasi Zahir</h1>
+    <table class="min-w-full border border-gray-300 text-sm">
+        <thead class="bg-blue-600 text-white">
+            <tr>
+                <th class="py-2 px-4 border">Tanggal</th>
+                <th class="py-2 px-4 border">Mutasi Bank (Saldo)</th>
+                <th class="py-2 px-4 border">Mutasi Zahir (Saldo)</th>
+                <th class="py-2 px-4 border">Selisih</th>
+            </tr>
+        </thead>
+        <tbody id="selisih-body">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Add event listener to filter button
+    const filterButton = document.querySelector('button[type="button"]');
+    filterButton.addEventListener('click', () => {
+        const tanggalFilter = document.getElementById('tanggal').value;
+        const urlParams = new URLSearchParams(window.location.search);
+        if (tanggalFilter) {
+            urlParams.set('tanggal', tanggalFilter);
+        } else {
+            urlParams.delete('tanggal');
+        }
+
+        // Request to url generate_report_different with date param
+        fetch(`/generate_report_different/?tanggal=${tanggalFilter}`)
+            .then(response => response.json())
+            .then(data => {
+                // Check data statusCode 200
+                if (data.statusCode !== 200) {
+                    // output tbody is message from data.message
+                    const tbody = document.querySelector('tbody');
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-2 px-4 border text-center text-red-500">${data.message}</td></tr>`;   
+
+                    return;
+                }
+
+                // Update the table with the new data
+                const tbodyDetail = document.getElementById('detail-body');
+                tbodyDetail.innerHTML = '';
+                data.data.detail.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.classList.add('hover:bg-gray-100');
+                    tr.innerHTML = `
+                        <td class="py-2 px-4 border">${new Date(item.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                        <td class="py-2 px-4 border">${item.description_bank}</td>
+                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border">${item.description_zahir}</td>
+                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    `;
+                    tbodyDetail.appendChild(tr);
+                }); 
+
+                const tbodySelisih = document.getElementById('selisih-body');
+                tbodySelisih.innerHTML = '';
+                data.data.selisih.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.classList.add('hover:bg-gray-100');
+                    tr.innerHTML = `
+                        <td class="py-2 px-4 border">${new Date(item.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.difference < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.difference).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    `;
+                    tbodySelisih.appendChild(tr);
+                }); 
+            });
+    });
+</script>
+
+{% endblock %}
