@@ -43,8 +43,8 @@
         <thead class="bg-blue-600 text-white">
             <tr>
                 <th class="py-2 px-4 border">Tanggal</th>
-                <th class="py-2 px-4 border">Mutasi Bank (Saldo)</th>
-                <th class="py-2 px-4 border">Mutasi Zahir (Saldo)</th>
+                <th class="py-2 px-4 border">Total Mutasi Bank</th>
+                <th class="py-2 px-4 border">Total Mutasi Zahir</th>
                 <th class="py-2 px-4 border">Selisih</th>
             </tr>
         </thead>
@@ -88,9 +88,9 @@
                     tr.innerHTML = `
                         <td class="py-2 px-4 border">${new Date(item.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                         <td class="py-2 px-4 border">${item.description_bank}</td>
-                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">Rp. ${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         <td class="py-2 px-4 border">${item.description_zahir}</td>
-                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">Rp. ${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     `;
                     tbodyDetail.appendChild(tr);
                 }); 
@@ -102,9 +102,9 @@
                     tr.classList.add('hover:bg-gray-100');
                     tr.innerHTML = `
                         <td class="py-2 px-4 border">${new Date(item.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        <td class="py-2 px-4 border text-right ${item.difference < 0 ? 'text-red-500' : 'text-green-500'}">${parseFloat(item.difference).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.bank_total < 0 ? 'text-red-500' : 'text-green-500'}">Rp. ${parseFloat(item.bank_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.zahir_total < 0 ? 'text-red-500' : 'text-green-500'}">Rp. ${parseFloat(item.zahir_total).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-2 px-4 border text-right ${item.difference < 0 ? 'text-red-500' : 'text-green-500'}">Rp. ${parseFloat(item.difference).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     `;
                     tbodySelisih.appendChild(tr);
                 }); 

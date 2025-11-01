@@ -26,10 +26,10 @@
             <td class="py-2 px-4 border">{{ item.ref_code }}</td>
             <td class="py-2 px-4 border">{{ item.ref_number }}</td>
             <td class="py-2 px-4 border">{{ item.description }}</td>
-            <td class="py-2 px-4 border text-right">{{ item.debit|floatformat:2|intcomma }}</td>
-            <td class="py-2 px-4 border text-right">{{ item.kredit|floatformat:2|intcomma }}</td>
+            <td class="py-2 px-4 border text-right">Rp. {{ item.debit|floatformat:2|intcomma }}</td>
+            <td class="py-2 px-4 border text-right">Rp. {{ item.kredit|floatformat:2|intcomma }}</td>
             <!-- Added Color Read saldo column , if saldo < 0 then red else green -->
-            <td class="py-2 px-4 border text-right {% if item.saldo < 0 %}text-red-500{% else %}text-green-500{% endif %}">{{ item.saldo|floatformat:2|intcomma }}</td>
+            <td class="py-2 px-4 border text-right {% if item.saldo < 0 %}text-red-500{% else %}text-green-500{% endif %}">Rp. {{ item.saldo|floatformat:2|intcomma }}</td>
         </tr>
         {% endfor %}
     </tbody>
